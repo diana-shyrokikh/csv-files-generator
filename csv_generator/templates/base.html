@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  {% block title %}
+    <title>Data Schemas</title>
+  {% endblock %}
+</head>
+<body>
+  {% include "includes/navbar.html" %}
+  {% block content %}{% endblock %}
+</body>
+</html>
