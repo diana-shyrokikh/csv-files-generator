@@ -1,0 +1,68 @@
+{% include "base.html" %}
+<div>
+  <form method="post">
+    <div class="container-fluid" style="padding: 20px">
+      <div class="row">
+        <div class="col-sm-11">
+           <h1>New schemas</h1>
+        </div>
+
+        <div class="col-sm-1">
+          <button
+              type="submit"
+              class="btn btn-success btn-lg"
+          >
+            Create
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="container-fluid" style="padding: 20px">
+
+    </div>
+
+    {% csrf_token %}
+
+
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="inputGroup-sizing-default">Title</span>
+      <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="title" required>
+      {% if form.errors.title %}
+        {{ form.errors.title }}
+      {% endif %}
+    </div>
+
+    <input type="hidden" name="user" required value="{{ user.id }}">
+
+    <div class="row">
+      <div class="col-sm-9">
+        <h3>Schema Columns</h3>
+      </div>
+      <div>
+        <hr>
+        <p>
+          You can have a maximum of 10 fields with different types following the rules:<br>
+          <ul>
+            <li>Column names, schema title and order should be unique;</li>
+            <li>Column names and schema title should start with a letter and can consist of numbers and spaces;</li>
+            <li>“From range” and “To range” fields are not required;</li>
+            <li>You can choose the range of numbers for “Integer” type fields;</li>
+            <li>You can choose the range of sentence count for “Text” type fields.</li>
+         </ul>
+         <b>Before creating click on “Delete” at empty fields</b>
+        </p>
+        <br>
+      </div>
+      <div id="children-forms">
+        <div id="child-form" class="child-form" style="max-height: 500px; overflow-y: auto;">
+          {{ children.as_table }}
+        </div>
+      </div>
+    </div>
+  </form>
+  <br>
+</div>
