@@ -3,13 +3,15 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
-NANE_REGEX = r"^[a-z][a-z0-9]*$"
+
+USERNAME_REGEX = r"^[a-z][a-z0-9]*$"
+NAME_REGEX = r"^[a-zA-Z][a-zA-Z0-9\s]*$"
 
 
 class User(AbstractUser):
     username = models.CharField(max_length=100, unique=True, validators=[
         RegexValidator(
-            regex=NANE_REGEX,
+            regex=USERNAME_REGEX,
             message="Username should start with letter "
                     "and contains only letters and numbers",
             code="invalid_username"
@@ -23,7 +25,7 @@ class User(AbstractUser):
 class DataSchema(models.Model):
     title = models.CharField(max_length=255, validators=[
         RegexValidator(
-            regex=NANE_REGEX,
+            regex=NAME_REGEX,
             message="Title should start with letter "
                     "and contains only letters and numbers",
             code="invalid_title"
@@ -57,7 +59,7 @@ class SchemaColumn(models.Model):
 
     name = models.CharField(max_length=255, validators=[
         RegexValidator(
-            regex=NANE_REGEX,
+            regex=NAME_REGEX,
             message="Column name should start with letter "
                     "and contains only letters and numbers",
             code="invalid_name"
