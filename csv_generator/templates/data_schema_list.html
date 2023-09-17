@@ -1,4 +1,3 @@
-
 {% include "base.html" %}
 <div>
 
@@ -9,12 +8,13 @@
       </div>
 
       <div class="col-sm-3">
-        <button
+        <a
             type="button"
             class="btn btn-success btn-lg"
+            href="{% url 'csv_generator:schema-create' %}"
         >
           New schema
-        </button>
+        </a>
 
       </div>
     </div>
