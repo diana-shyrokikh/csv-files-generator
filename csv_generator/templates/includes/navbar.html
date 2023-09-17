@@ -1,8 +1,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <b class="navbar-brand">CSV GENERATOR</b>
-    <a class="navbar-text nav-link" href="#">
-      Schemas
+    <a
+        class="navbar-text nav-link"
+        href="{% url 'csv_generator:schema-list' %}"
+    >
+      Schema List
     </a>
 
     <span class="navbar-text">
