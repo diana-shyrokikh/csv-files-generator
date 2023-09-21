@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1",]
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -37,6 +37,8 @@ INTERNAL_IPS = [
 # Application definition
 
 INSTALLED_APPS = [
+    "channels",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,10 +47,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     "bootstrap5",
+    # "crispy_forms",
+    # "crispy_bootstrap5",
     "debug_toolbar",
 
     "csv_generator",
 ]
+
+# CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+#
+# CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,7 +88,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'csv_gen_service.wsgi.application'
-
+ASGI_APPLICATION = "csv_gen_service.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
