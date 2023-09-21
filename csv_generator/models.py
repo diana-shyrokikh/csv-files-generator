@@ -99,3 +99,18 @@ class SchemaColumn(models.Model):
             ["order", "schema"],
             ["name", "type", "schema"],
         ]
+
+
+class GeneratedCSV(models.Model):
+    STATUS = [
+        ("Processing", "Processing"),
+        ("Ready", "Ready"),
+    ]
+
+    created = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=63, choices=STATUS, default="Processing")
+    file = models.FileField(upload_to="csv_files/", blank=True, null=True)
+    data_schema = models.ForeignKey(DataSchema, on_delete=models.CASCADE, related_name="generated_csv")
+
+    def __str__(self):
+        return self.file.name
