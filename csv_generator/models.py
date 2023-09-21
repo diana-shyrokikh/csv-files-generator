@@ -32,7 +32,7 @@ class DataSchema(models.Model):
         )
     ])
     modified = models.DateField(auto_now=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="data_schemas")
 
     def __str__(self):
         return f"{self.title} user: {self.user}"
@@ -67,7 +67,7 @@ class SchemaColumn(models.Model):
     ])
     type = models.CharField(choices=TYPES, max_length=255)
     order = models.IntegerField(validators=[MinValueValidator(limit_value=0)])
-    schema = models.ForeignKey(DataSchema, on_delete=models.CASCADE)
+    schema = models.ForeignKey(DataSchema, on_delete=models.CASCADE, related_name="schema_columns")
 
     from_range = models.IntegerField(blank=True, null=True)
     to_range = models.IntegerField(blank=True, null=True)
