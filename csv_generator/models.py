@@ -1,22 +1,25 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import (
+    MinValueValidator,
+    RegexValidator,
+)
 from django.db import models
-
 
 USERNAME_REGEX = r"^[a-z][a-z0-9]*$"
 NAME_REGEX = r"^[a-zA-Z][a-zA-Z0-9\s]*$"
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=100, unique=True, validators=[
-        RegexValidator(
-            regex=USERNAME_REGEX,
-            message="Username should start with letter "
-                    "and contains only letters and numbers",
-            code="invalid_username"
-        )
-    ])
+    username = models.CharField(
+        max_length=100, unique=True, validators=[
+            RegexValidator(
+                regex=USERNAME_REGEX,
+                message="Username should start with letter "
+                        "and contains only letters and numbers",
+                code="invalid_username"
+            )
+        ])
 
     def __str__(self):
         return self.username
@@ -32,7 +35,11 @@ class DataSchema(models.Model):
         )
     ])
     modified = models.DateField(auto_now=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="data_schemas")
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="data_schemas",
+    )
 
     def __str__(self):
         return f"{self.title} user: {self.user}"
@@ -57,17 +64,24 @@ class SchemaColumn(models.Model):
         ("Date", "Date"),
     ]
 
-    name = models.CharField(max_length=255, validators=[
-        RegexValidator(
-            regex=NAME_REGEX,
-            message="Column name should start with letter "
-                    "and contains only letters and numbers",
-            code="invalid_name"
-        )
-    ])
+    name = models.CharField(
+        max_length=255, validators=[
+            RegexValidator(
+                regex=NAME_REGEX,
+                message="Column name should start with letter "
+                        "and contains only letters and numbers",
+                code="invalid_name"
+            )
+        ])
     type = models.CharField(choices=TYPES, max_length=255)
-    order = models.IntegerField(validators=[MinValueValidator(limit_value=0)])
-    schema = models.ForeignKey(DataSchema, on_delete=models.CASCADE, related_name="schema_columns")
+    order = models.IntegerField(
+        validators=[MinValueValidator(limit_value=0)]
+    )
+    schema = models.ForeignKey(
+        DataSchema,
+        on_delete=models.CASCADE,
+        related_name="schema_columns"
+    )
 
     from_range = models.IntegerField(blank=True, null=True)
     to_range = models.IntegerField(blank=True, null=True)
@@ -80,10 +94,17 @@ class SchemaColumn(models.Model):
             self.to_range = 2
 
         if self.from_range < 1:
-            raise ValidationError({"from_range": "'From' field must be >= 1"})
+            raise ValidationError(
+                {"from_range": "'From' field must be >= 1"}
+            )
 
         if self.to_range < self.from_range:
-            raise ValidationError({"to_range": "'To' field must be >= 'From' field"})
+            raise ValidationError(
+                {
+                    "to_range":
+                        "'To' field must be >= 'From' field"
+                }
+            )
 
         return True
 
@@ -108,9 +129,20 @@ class GeneratedCSV(models.Model):
     ]
 
     created = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=63, choices=STATUS, default="Processing")
-    file = models.FileField(upload_to="csv_files/", blank=True, null=True)
-    data_schema = models.ForeignKey(DataSchema, on_delete=models.CASCADE, related_name="generated_csv")
+    status = models.CharField(
+        max_length=63, choices=STATUS, default="Processing"
+    )
+    file = models.FileField(
+        upload_to="csv_files/", blank=True, null=True
+    )
+    data_schema = models.ForeignKey(
+        DataSchema,
+        on_delete=models.CASCADE,
+        related_name="generated_csv"
+    )
 
     def __str__(self):
         return self.file.name
+
+    class Meta:
+        ordering = ["-pk", ]
