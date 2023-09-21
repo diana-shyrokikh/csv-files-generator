@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User, SchemaColumn, DataSchema
+from .models import (
+    User,
+    SchemaColumn,
+    DataSchema,
+    GeneratedCSV,
+)
 
 
 class SchemaColumnInLine(admin.TabularInline):
@@ -20,3 +25,4 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(SchemaColumn)
+admin.site.register(GeneratedCSV)
