@@ -3,6 +3,7 @@ from django.urls import path
 from csv_generator.views import (
     DataSchemaListView,
     DataSchemaCreateView,
+    DataSchemaUpdateView,
     DataSchemaDeleteView,
     CSVGenerateView,
     CSVDownloadView,
@@ -22,7 +23,12 @@ urlpatterns = [
         name="schema-create"
     ),
     path(
-        "delete/<int:pk>",
+        "update/<int:pk>/",
+        DataSchemaUpdateView.as_view(),
+        name="schema-update"
+    ),
+    path(
+        "delete/<int:pk>/",
         DataSchemaDeleteView.as_view(),
         name="schema-delete"
     ),
