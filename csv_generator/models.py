@@ -95,20 +95,21 @@ class SchemaColumn(models.Model):
 
         if self.from_range < 1:
             raise ValidationError(
-                {"from_range": "'From' field must be >= 1"}
+                {"from_range": "'From' field must be equal or greater than 1"}
             )
 
         if self.to_range < self.from_range:
             raise ValidationError(
                 {
                     "to_range":
-                        "'To' field must be >= 'From' field"
+                        "'To' field must be equal or greater than 'From' field"
                 }
             )
 
         return True
 
     def clean(self):
+        super().clean()
         if self.type in ("Integer", "Text"):
             self.validate_range()
 
@@ -120,6 +121,7 @@ class SchemaColumn(models.Model):
             ["order", "schema"],
             ["name", "type", "schema"],
         ]
+        ordering = ["order"]
 
 
 class GeneratedCSV(models.Model):
