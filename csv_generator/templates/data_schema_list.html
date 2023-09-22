@@ -1,63 +1,65 @@
-{% include "base.html" %}
-<div>
+{% extends "base.html" %}
+{% block title %}
+    <title>CSV Generator | Data Schemas</title>
+{% endblock %}
+{% block content %}
+  <div>
+    <div class="container-fluid" style="padding: 20px">
+      <div class="row">
+        <div class="col-sm-9">
+           <h1>Data schemas</h1>
+        </div>
 
-  <div class="container-fluid" style="padding: 20px">
-    <div class="row">
-      <div class="col-sm-9">
-         <h1>Data schemas</h1>
-      </div>
+        <div class="col-sm-3">
+          <a
+              type="button"
+              class="btn btn-success btn-lg"
+              href="{% url 'csv_generator:schema-create' %}"
+          >
+            New schema
+          </a>
 
-      <div class="col-sm-3">
-        <a
-            type="button"
-            class="btn btn-success btn-lg"
-            href="{% url 'csv_generator:schema-create' %}"
-        >
-          New schema
-        </a>
-
+        </div>
       </div>
     </div>
-  </div>
 
 
-  <div
-      class="container-lg"
-      style="max-height: 500px; overflow-y: auto;"
-  >
-    {% if data_schemas %}
-      <table
-          class="table table-light table-hover table-striped"
-      >
-        <thead>
-          <tr>
-            <th scope="col" class="text-center">#</th>
-            <th scope="col" class="text-center">Title</th>
-            <th scope="col" class="text-center">Modified</th>
-            <th scope="col" class="text-center">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {% for data_schema in data_schemas %}
+    <div
+        class="container-lg"
+        style="max-height: 500px; overflow-y: auto;"
+    >
+      {% if data_schemas %}
+        <table
+            class="table table-light table-hover table-striped"
+        >
+          <thead>
             <tr>
-              {% with forloop.counter0 as index %}
-                <th scope="row" class="text-center">{{ index|add:1 }}</th>
-                <td class="text-center">{{ data_schema.title }}</td>
-                <td class="text-center">{{ data_schema.modified }}</td>
-                <td class="text-center">
-                   <a class="link-primary" style="padding: 5px" href="#">Edit</a>
-                   <a class="link-danger" style="padding: 5px" href="#">Delete</a>
-                </td>
-              {% endwith %}
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">Title</th>
+              <th scope="col" class="text-center">Modified</th>
+              <th scope="col" class="text-center">Actions</th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+          </thead>
 
+          <tbody>
+            {% for data_schema in data_schemas %}
+              <tr>
+                {% with forloop.counter0 as index %}
+                  <th scope="row" class="text-center">{{ index|add:1 }}</th>
+                  <td class="text-center">{{ data_schema.title }}</td>
+                  <td class="text-center">{{ data_schema.modified }}</td>
+                  <td class="text-center">
+                     <a class="link-primary" style="padding: 5px" href="#">Edit</a>
+                     <a class="link-danger" style="padding: 5px" href="#">Delete</a>
+                  </td>
+                {% endwith %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
     {% else %}
-    <h2>There are no data schemas</h2>
-  {% endif%}
+      <h2>There are no data schemas</h2>
+    {% endif%}
+    </div>
   </div>
-
-</div>
+{% endblock %}
