@@ -19,6 +19,6 @@ class DataSchemaForm(forms.ModelForm):
 SchemaColumnFormSet = inlineformset_factory(
     DataSchema,
     SchemaColumn,
-    extra=10,
+    extra=0,
     fields="__all__",
 )
