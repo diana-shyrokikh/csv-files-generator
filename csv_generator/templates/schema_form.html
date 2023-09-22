@@ -1,142 +1,145 @@
-{% include "base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
-<div style="padding: 20px">
-  <form method="post">
-    <div class="container-fluid">
+{% block title %}
+    <title>CSV Generator | Create Schema</title>
+{% endblock %}
+{% block content %}
+  <div class="m-3">
+    <form method="post">
+      <div class="container mb-3">
+        <div class="row">
+          <div class="col-sm-11">
+             <h1>New schema</h1>
+          </div>
+          <div class="col-sm-1">
+            <button
+                type="submit"
+                class="btn btn-success btn-lg"
+            >
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {% csrf_token %}
+
+      <div class="input-group mb-3" style="max-width: 300px">
+        <span
+            class="input-group-text"
+            id="inputGroup-sizing-default"
+        >
+          Title
+        </span>
+        <input
+            type="text"
+            class="form-control"
+            name="title"
+            required
+        >
+        {% if form.errors.title %}
+          {{ form.errors.title }}
+        {% endif %}
+      </div>
+
+      <input type="hidden" name="user" required value="{{ user.id }}">
+
       <div class="row">
-        <div class="col-sm-11">
-           <h1>New schemas</h1>
+        <div>
+          <h3>Schema Columns</h3>
         </div>
-        <div class="col-sm-1">
-          <button
-              type="submit"
-              class="btn btn-success btn-lg"
-          >
-            Create
-          </button>
+        <div>
+          <hr>
+          <p>
+            You can add fields for a CSV file with different types following the rules:<br>
+            <ul>
+              <li>Column names, schema title and order should be unique;</li>
+              <li>Column names and schema title should start with a letter and can consist of numbers and spaces;</li>
+              <li>“From range” and “To range” fields are not required;</li>
+              <li>You can choose the range of numbers for “Integer” type fields;</li>
+              <li>You can choose the range of sentence count for “Text” type fields.</li>
+           </ul>
+           <b>Before creating click on “Delete” checkbox at fields which became unnecessary</b>
+          </p>
+          <br>
         </div>
       </div>
-    </div>
-
-    {% csrf_token %}
-
-    <div class="input-group mb-3">
-      <span
-          class="input-group-text"
-          id="inputGroup-sizing-default"
+      <div
+        class="container-lg"
+        style="max-height: 300px; overflow-y: auto;"
       >
-        Title
-      </span>
-      <input
-          type="text"
-          class="form-control"
-          aria-label="Sizing example input"
-          aria-describedby="inputGroup-sizing-default"
-          name="title"
-          required
-      >
-      {% if form.errors.title %}
-        {{ form.errors.title }}
-      {% endif %}
-    </div>
-
-    <input type="hidden" name="user" required value="{{ user.id }}">
-
-    <div class="row">
-      <div class="col-sm-9">
-        <h3>Schema Columns</h3>
+        <table
+              class="table table-light table-hover"
+        >
+          <tbody id="children-form-table">
+            {{ children.management_form }}
+            {% if children %}
+              {% for child in children %}
+                <tr>
+                  {% for field in child %}
+                    <td class="text-center">
+                      {{ field|as_crispy_field }}
+                    </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            {% endif %}
+            <tr id="empty-form" style="display: none">
+              {% for field in children.empty_form %}
+                <td class="text-center">
+                  {{ field|as_crispy_field }}
+                </td>
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div>
-        <hr>
-        <p>
-          You can add fields for a CSV file with different types following the rules:<br>
-          <ul>
-            <li>Column names, schema title and order should be unique;</li>
-            <li>Column names and schema title should start with a letter and can consist of numbers and spaces;</li>
-            <li>“From range” and “To range” fields are not required;</li>
-            <li>You can choose the range of numbers for “Integer” type fields;</li>
-            <li>You can choose the range of sentence count for “Text” type fields.</li>
-         </ul>
-         <b>Before creating click on “Delete” checkbox at fields which became unnecessary</b>
-        </p>
-        <br>
-      </div>
-    </div>
-    <div
-      class="container-lg"
-      style="max-height: 500px; overflow-y: auto;"
-    >
-      <table
-            class="table table-light table-hover"
+      <button
+          id="add-more"
+          type="button"
+          class="btn btn-secondary btn-lg"
       >
-        <tbody id="children-form-table">
-          {{ children.management_form }}
-          {% if children %}
-            {% for child in children %}
-              <tr>
-                {% for field in child %}
-                  <td class="text-center">
-                    {{ field|as_crispy_field }}
-                  </td>
-                {% endfor %}
-              </tr>
-            {% endfor %}
-          {% endif %}
-          <tr id="empty-form" style="display: none">
-            {% for field in children.empty_form %}
-              <td class="text-center">
-                {{ field|as_crispy_field }}
-              </td>
-            {% endfor %}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <button
-        id="add-more"
-        type="button"
-        class="btn btn-secondary btn-lg"
-    >
-      Add column
-    </button>
-  </form>
-  <br>
-</div>
-<script>
-    const addMoreBtn = document.getElementById("add-more");
-    const totalNewForms = document.getElementById(
-        "id_schema_column-TOTAL_FORMS"
-    );
-    addMoreBtn.addEventListener("click", add_new_form)
+        Add column
+      </button>
+    </form>
+    <br>
+  </div>
+  <script>
+      const addMoreBtn = document.getElementById("add-more");
+      const totalNewForms = document.getElementById(
+          "id_schema_column-TOTAL_FORMS"
+      );
+      addMoreBtn.addEventListener("click", add_new_form)
 
-    function add_new_form(event) {
-        if (event) {
-            event.preventDefault();
-        }
+      function add_new_form(event) {
+          if (event) {
+              event.preventDefault();
+          }
 
-        const currentChildForms = document.getElementsByClassName(
-            "children-form"
-        );
-        const currentFormCount = currentChildForms.length;
-        const regex = new RegExp("__prefix__", "g");
+          const currentChildForms = document.getElementsByClassName(
+              "children-form"
+          );
+          const currentFormCount = currentChildForms.length;
+          const regex = new RegExp("__prefix__", "g");
 
 
-        const formCopyTarget = document.getElementById(
-            "children-form-table"
-        );
-        const copyEmptyFormEl = document.getElementById(
-            "empty-form"
-        ).cloneNode(true);
+          const formCopyTarget = document.getElementById(
+              "children-form-table"
+          );
+          const copyEmptyFormEl = document.getElementById(
+              "empty-form"
+          ).cloneNode(true);
 
-        copyEmptyFormEl.setAttribute("class", "children-form");
-        copyEmptyFormEl.setAttribute("style", "display: true");
-        copyEmptyFormEl.setAttribute("id", `child-${currentFormCount}`);
-        copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(
-            regex, currentFormCount
-        );
+          copyEmptyFormEl.setAttribute("class", "children-form");
+          copyEmptyFormEl.setAttribute("style", "display: true");
+          copyEmptyFormEl.setAttribute("id", `child-${currentFormCount}`);
+          copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(
+              regex, currentFormCount
+          );
 
-        totalNewForms.setAttribute("value", currentFormCount + 1);
+          totalNewForms.setAttribute("value", currentFormCount + 1);
 
-        formCopyTarget.append(copyEmptyFormEl);
-    }
-</script>
+          formCopyTarget.append(copyEmptyFormEl);
+      }
+  </script>
+{% endblock %}
