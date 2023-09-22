@@ -1,22 +1,28 @@
 {% extends "base.html" %}
+
+{% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
+
+{% crispy form %}
+
 {% block title %}
-    <title>CSV Generator | Create Schema</title>
+    <title>{{ object|yesno:"Edit,Create" }} Schema | CSV Generator</title>
 {% endblock %}
+
 {% block content %}
   <div class="m-3">
     <form method="post">
-      <div class="container mb-3">
+      <div class=" mb-3">
         <div class="row">
-          <div class="col-sm-11">
-             <h1>New schema</h1>
+          <div class="col-11">
+             <h1>{{ object|yesno:"Edit,Create" }} schema</h1>
           </div>
-          <div class="col-sm-1">
+          <div class="col-1">
             <button
                 type="submit"
                 class="btn btn-success btn-lg"
             >
-              Create
+              {{ object|yesno:"Edit,Create" }}
             </button>
           </div>
         </div>
@@ -36,6 +42,7 @@
             class="form-control"
             name="title"
             required
+            value="{% if object %}{{ dataschema.title }}{% endif %}"
         >
         {% if form.errors.title %}
           {{ form.errors.title }}
@@ -75,7 +82,7 @@
             {{ children.management_form }}
             {% if children %}
               {% for child in children %}
-                <tr>
+                <tr class="children-form">
                   {% for field in child %}
                     <td class="text-center">
                       {{ field|as_crispy_field }}
@@ -97,7 +104,7 @@
       <button
           id="add-more"
           type="button"
-          class="btn btn-secondary btn-lg"
+          class="btn btn-secondary btn-lg mt-3"
       >
         Add column
       </button>
