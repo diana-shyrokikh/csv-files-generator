@@ -32,8 +32,6 @@ class DataSchemaCreateView(CreateView):
     model = DataSchema
     form_class = DataSchemaForm
     template_name = "schema_form.html"
-    context_object_name = "new_schema"
-    success_url = reverse_lazy("csv_generator:schema-list")
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -57,7 +55,48 @@ class DataSchemaCreateView(CreateView):
             children.instance = self.object
             children.save()
 
-        return super().form_valid(form)
+            return super().form_valid(form)
+        else:
+            return self.render_to_response(context)
+
+    def get_success_url(self):
+        return reverse(
+            "csv_generator:csv-generate",
+            kwargs={'pk': self.object.pk}
+        )
+
+
+class DataSchemaUpdateView(generic.UpdateView):
+    model = DataSchema
+    form_class = DataSchemaForm
+    template_name = "schema_form.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        if self.request.POST:
+            data["children"] = SchemaColumnFormSet(
+                self.request.POST, instance=self.object, prefix="schema_column"
+            )
+        else:
+            data["children"] = SchemaColumnFormSet(
+                instance=self.object,
+                prefix="schema_column"
+            )
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        children = context["children"]
+        self.object = form.save()
+
+        if children.is_valid():
+            children.instance = self.object
+            children.save()
+
+            return super().form_valid(form)
+        else:
+            return self.render_to_response(context)
 
     def get_success_url(self):
         return reverse(
