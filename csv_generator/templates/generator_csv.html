@@ -1,247 +1,252 @@
-{% include "base.html" %}
-<div>
+{% extends "base.html" %}
+{% block title %}
+    <title>CSV Generator</title>
+{% endblock %}
+{% block content %}
+  <div>
 
-  <div class="container-fluid" style="padding: 20px; max-height: 300px; overflow-y: auto;">
-    <div class="row">
-      <div class="col-sm-6">
-          <h1>{{ data_schema.title }}</h1>
-      </div>
+    <div class="container-fluid" style="padding: 20px; max-height: 300px; overflow-y: auto;">
+      <div class="row">
+        <div class="col-sm-6">
+            <h1>{{ data_schema.title }}</h1>
+        </div>
 
-      <div class="col-sm-3">
-        <a
-            type="button"
-            class="btn btn-primary btn-lg"
-{#            href="{% url 'csv_generator:schema-create' %}"#}
-        >
-          Edit
-        </a>
+        <div class="col-sm-3">
+          <a
+              type="button"
+              class="btn btn-primary btn-lg"
+  {#            href="{% url 'csv_generator:schema-create' %}"#}
+          >
+            Edit
+          </a>
 
+        </div>
       </div>
     </div>
-  </div>
 
 
-  <div
-      class="col-sm-6"
-      style="padding-left: 20px"
-  >
-    {% if data_schema.schema_columns %}
-      <table
-          class="table table-light table-hover"
-      >
-        <thead>
-          <tr>
-            <th scope="col" class="text-center"># Order</th>
-            <th scope="col" class="text-center">Column name</th>
-            <th scope="col" class="text-center">Column type</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {% for column in data_schema.schema_columns.iterator %}
-            <tr>
-              <th scope="row" class="text-center">{{ column.order }}</th>
-              <td class="text-center">{{ column.name }}</td>
-              <td class="text-center">{{ column.type }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
-    {% else %}
-    <h2>There are no columns</h2>
-  {% endif%}
-  </div>
-
-  <div class="container-fluid" style="padding: 20px">
-    <h2>Data Sets</h2>
-    <p>
-      You can create files as much as you would like to.
-      <br>
-      If you would like to have more than 500 rows - we can make it!
-      <br>
-      Please, wait until your CSV file will be created :)
-    </p>
-  </div>
-
-  <div class="container-fluid" style="padding: 20px">
-    <form id="form">
-      {% csrf_token %}
-
-      <div>
-        <div class="input-group" style="margin-bottom: 20px;">
-          <span
-              id="inputGroup-sizing-default"
-              class="input-group-text"
-          >
-            Rows
-          </span>
-          <input
-              id="row-input"
-              type="number"
-              name="rows"
-              required
-              disabled
-          >
-        </div>
-        <div style="margin-bottom: 20px;">
-          <button
-            type="submit"
-            class="btn btn-success btn-lg"
+    <div
+        class="col-sm-6"
+        style="padding-left: 20px"
+    >
+      {% if data_schema.schema_columns %}
+        <table
+            class="table table-light table-hover"
         >
-          Generate CSV
-        </button>
-        </div>
-      </div>
-
-      <p id="connection-info">Connection to the generate server...</p>
-      </form>
-  </div>
-
-  <div
-      class="col-sm-9"
-      style="padding-left: 20px; margin-bottom: 20px; max-height: 200px; overflow-y: auto;"
-  >
-      <table
-          class="table table-light table-hover"
-      >
-        <thead>
-          <tr>
-            <th scope="col" class="text-center">Order id</th>
-            <th scope="col" class="text-center">Created</th>
-            <th scope="col" class="text-center">Status</th>
-            <th scope="col" class="text-center">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody id="csv-files">
-          {% for csv_file in generated_csv_files.iterator %}
-            <tr id="csv-file-{{ csv_file.id }}">
-              <th scope="row" class="text-center">{{ csv_file.id }}</th>
-              <td class="text-center">{{ csv_file.created|date:"Y-m-d" }}</td>
-              <td class="text-center">
-                {% if csv_file.status == "Ready" %}
-                  <div class="text-light bg-success rounded-3">
-                  Ready
-                  </div>
-                {% else %}
-                  <div class="text-light bg-secondary rounded-3">
-                  Processed
-                  </div>
-                {% endif %}
-              </td>
-              <td class="text-center">
-                {% if csv_file.status == "Ready" %}
-                  <a
-                      href="{% url 'csv_generator:csv-download' csv_file.id %}"
-                  >
-                    Download
-                  </a>
-                {% endif %}
-              </td>
+          <thead>
+            <tr>
+              <th scope="col" class="text-center"># Order</th>
+              <th scope="col" class="text-center">Column name</th>
+              <th scope="col" class="text-center">Column type</th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-  </div>
+          </thead>
 
-</div>
-<script type="text/javascript">
-    let csvSocket = null;
-    function connectWebSocket() {
-        let url = `ws://${window.location.host}/ws/socket-server/`;
-        const csvSocket = new WebSocket(url);
+          <tbody>
+            {% for column in data_schema.schema_columns.iterator %}
+              <tr>
+                <th scope="row" class="text-center">{{ column.order }}</th>
+                <td class="text-center">{{ column.name }}</td>
+                <td class="text-center">{{ column.type }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
 
-        csvSocket.onmessage = function (e) {
-            let data = JSON.parse(e.data);
-            console.log("Data:", data);
+      {% else %}
+      <h2>There are no columns</h2>
+    {% endif%}
+    </div>
 
-            if (data.type === "connection_established") {
-                let rowInput = document.getElementById("row-input");
-                let newRowInput = document.createElement("input");
-                newRowInput.setAttribute("type", "number");
-                newRowInput.setAttribute("name", "rows");
-                newRowInput.setAttribute("required", "true");
-                rowInput.parentNode.replaceChild(newRowInput, rowInput);
+    <div class="container-fluid" style="padding: 20px">
+      <h2>Data Sets</h2>
+      <p>
+        You can create files as much as you would like to.
+        <br>
+        If you would like to have more than 500 rows - we can make it!
+        <br>
+        Please, wait until your CSV file will be created :)
+      </p>
+    </div>
 
-                let connectionInfo = document.getElementById("connection-info");
-                let newConnectionInfo = document.createElement("p");
-                newConnectionInfo.innerHTML = `Ready to generate csv file!`;
-                connectionInfo.parentNode.replaceChild(newConnectionInfo, connectionInfo);
-            }
+    <div class="container-fluid" style="padding: 20px">
+      <form id="form">
+        {% csrf_token %}
 
-            if (data.type === "csv_generator_processing") {
-                let csvFilesTable = document.getElementById("csv-files");
+        <div>
+          <div class="input-group" style="margin-bottom: 20px;">
+            <span
+                id="inputGroup-sizing-default"
+                class="input-group-text"
+            >
+              Rows
+            </span>
+            <input
+                id="row-input"
+                type="number"
+                name="rows"
+                required
+                disabled
+            >
+          </div>
+          <div style="margin-bottom: 20px;">
+            <button
+              type="submit"
+              class="btn btn-success btn-lg"
+          >
+            Generate CSV
+          </button>
+          </div>
+        </div>
 
-                csvFilesTable.insertAdjacentHTML(
-                    'afterbegin',
-                    `<tr id="csv-file-${data.csv_instance_id}">
-                     <th scope="row" class="text-center">${data.csv_instance_id}</th>
-                     <td class="text-center">${data.csv_instance_created}</td>
-                     <td class="text-center">
-                         <div class="text-light bg-secondary rounded-3">
-                         Processed
-                         </div>
-                     </td>
-                     <td class="text-center">
-                     </td>
-                     </tr>
-                     `
-                );
-            }
+        <p id="connection-info">Connection to the generate server...</p>
+        </form>
+    </div>
 
-            if (data.type === "csv_generator_ready") {
-                let csvFileRow = document.getElementById(`csv-file-${data.csv_instance_id}`);
-                let newRow = document.createElement("tr");
-                let downloadUrl = `/schemas/generate/${data.csv_instance_id}/download`
+    <div
+        class="col-sm-9"
+        style="padding-left: 20px; margin-bottom: 20px; max-height: 200px; overflow-y: auto;"
+    >
+        <table
+            class="table table-light table-hover"
+        >
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">Order id</th>
+              <th scope="col" class="text-center">Created</th>
+              <th scope="col" class="text-center">Status</th>
+              <th scope="col" class="text-center">Actions</th>
+            </tr>
+          </thead>
 
-                newRow.innerHTML = `
-                <th scope="row" class="text-center">${data.csv_instance_id}</th>
-                <td class="text-center">${data.csv_instance_created}</td>
+          <tbody id="csv-files">
+            {% for csv_file in generated_csv_files.iterator %}
+              <tr id="csv-file-{{ csv_file.id }}">
+                <th scope="row" class="text-center">{{ csv_file.id }}</th>
+                <td class="text-center">{{ csv_file.created|date:"Y-m-d" }}</td>
                 <td class="text-center">
+                  {% if csv_file.status == "Ready" %}
                     <div class="text-light bg-success rounded-3">
                     Ready
                     </div>
+                  {% else %}
+                    <div class="text-light bg-secondary rounded-3">
+                    Processed
+                    </div>
+                  {% endif %}
                 </td>
                 <td class="text-center">
-                    <a href="${downloadUrl}">Download</a>
+                  {% if csv_file.status == "Ready" %}
+                    <a
+                        href="{% url 'csv_generator:csv-download' csv_file.id %}"
+                    >
+                      Download
+                    </a>
+                  {% endif %}
                 </td>
-                `
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
 
-                csvFileRow.parentNode.replaceChild(newRow, csvFileRow);
-                console.log(newRow)
-            }
-        }
+  </div>
+  <script type="text/javascript">
+      let csvSocket = null;
+      function connectWebSocket() {
+          let url = `ws://${window.location.host}/ws/socket-server/`;
+          const csvSocket = new WebSocket(url);
 
-        csvSocket.onclose = function (event) {
-            if (event.code === 1006) {
-                setTimeout(function () {
-                    location.reload();
-                }, 60000);
+          csvSocket.onmessage = function (e) {
+              let data = JSON.parse(e.data);
+              console.log("Data:", data);
 
-                let connectionInfo = document.getElementById("connection-info");
-                let newConnectionInfo = document.createElement("p");
-                newConnectionInfo.innerHTML = `
-                  You left me before receiving your CSV file :(
-                  <br>You can make a new file after auto reload page in 60 seconds`;
-                connectionInfo.parentNode.replaceChild(newConnectionInfo, connectionInfo);
-            }
+              if (data.type === "connection_established") {
+                  let rowInput = document.getElementById("row-input");
+                  let newRowInput = document.createElement("input");
+                  newRowInput.setAttribute("type", "number");
+                  newRowInput.setAttribute("name", "rows");
+                  newRowInput.setAttribute("required", "true");
+                  rowInput.parentNode.replaceChild(newRowInput, rowInput);
 
-        };
+                  let connectionInfo = document.getElementById("connection-info");
+                  let newConnectionInfo = document.createElement("p");
+                  newConnectionInfo.innerHTML = `Ready to generate csv file!`;
+                  connectionInfo.parentNode.replaceChild(newConnectionInfo, connectionInfo);
+              }
 
-        let form = document.getElementById("form")
-        form.addEventListener("submit", (e)=> {
-            e.preventDefault()
-            let rows = e.target.rows.value
-            console.log("Rows:", rows, "data_schema_id", {{ data_schema.pk }})
-            csvSocket.send(JSON.stringify({
-                "rows": rows,
-                "data_schema_id": {{ data_schema.pk }},
-            }))
-            form.reset()
-        })
-    }
+              if (data.type === "csv_generator_processing") {
+                  let csvFilesTable = document.getElementById("csv-files");
 
-    connectWebSocket();
+                  csvFilesTable.insertAdjacentHTML(
+                      'afterbegin',
+                      `<tr id="csv-file-${data.csv_instance_id}">
+                       <th scope="row" class="text-center">${data.csv_instance_id}</th>
+                       <td class="text-center">${data.csv_instance_created}</td>
+                       <td class="text-center">
+                           <div class="text-light bg-secondary rounded-3">
+                           Processed
+                           </div>
+                       </td>
+                       <td class="text-center">
+                       </td>
+                       </tr>
+                       `
+                  );
+              }
 
-</script>
+              if (data.type === "csv_generator_ready") {
+                  let csvFileRow = document.getElementById(`csv-file-${data.csv_instance_id}`);
+                  let newRow = document.createElement("tr");
+                  let downloadUrl = `/schemas/generate/${data.csv_instance_id}/download`
+
+                  newRow.innerHTML = `
+                  <th scope="row" class="text-center">${data.csv_instance_id}</th>
+                  <td class="text-center">${data.csv_instance_created}</td>
+                  <td class="text-center">
+                      <div class="text-light bg-success rounded-3">
+                      Ready
+                      </div>
+                  </td>
+                  <td class="text-center">
+                      <a href="${downloadUrl}">Download</a>
+                  </td>
+                  `
+
+                  csvFileRow.parentNode.replaceChild(newRow, csvFileRow);
+                  console.log(newRow)
+              }
+          }
+
+          csvSocket.onclose = function (event) {
+              if (event.code === 1006) {
+                  setTimeout(function () {
+                      location.reload();
+                  }, 60000);
+
+                  let connectionInfo = document.getElementById("connection-info");
+                  let newConnectionInfo = document.createElement("p");
+                  newConnectionInfo.innerHTML = `
+                    You left me before receiving your CSV file :(
+                    <br>You can make a new file after auto reload page in 60 seconds`;
+                  connectionInfo.parentNode.replaceChild(newConnectionInfo, connectionInfo);
+              }
+
+          };
+
+          let form = document.getElementById("form")
+          form.addEventListener("submit", (e)=> {
+              e.preventDefault()
+              let rows = e.target.rows.value
+              console.log("Rows:", rows, "data_schema_id", {{ data_schema.pk }})
+              csvSocket.send(JSON.stringify({
+                  "rows": rows,
+                  "data_schema_id": {{ data_schema.pk }},
+              }))
+              form.reset()
+          })
+      }
+
+      connectWebSocket();
+
+  </script>
+{% endblock %}
