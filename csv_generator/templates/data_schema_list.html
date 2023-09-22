@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+
 {% block title %}
     <title>Data Schemas | CSV Generator</title>
 {% endblock %}
+
 {% block content %}
   <div>
     <div class="container-fluid" style="padding: 20px">
@@ -49,7 +51,13 @@
                   <td class="text-center">{{ data_schema.title }}</td>
                   <td class="text-center">{{ data_schema.modified }}</td>
                   <td class="text-center">
-                     <a class="link-primary" style="padding: 5px" href="#">Edit</a>
+                     <a
+                         class="link-primary"
+                         style="padding: 5px"
+                         href="{% url 'csv_generator:schema-update'  pk=data_schema.id%}"
+                     >
+                       Edit
+                     </a>
                      <a
                          class="link-danger"
                          style="padding: 5px"
