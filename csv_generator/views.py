@@ -4,14 +4,17 @@ from django.conf import settings
 from django.http import FileResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
-from django.views import View
+from django.views import View, generic
 from django.views.generic import ListView, CreateView
 
 from csv_generator.forms import (
     DataSchemaForm,
     SchemaColumnFormSet,
 )
-from csv_generator.models import DataSchema, GeneratedCSV
+from csv_generator.models import (
+    DataSchema,
+    GeneratedCSV,
+)
 
 
 class DataSchemaListView(ListView):
@@ -61,6 +64,12 @@ class DataSchemaCreateView(CreateView):
             "csv_generator:csv-generate",
             kwargs={'pk': self.object.pk}
         )
+
+
+class DataSchemaDeleteView(generic.DeleteView):
+    model = DataSchema
+    template_name = "data_schema_confirm_delete.html"
+    success_url = reverse_lazy("csv_generator:schema-list")
 
 
 class CSVGenerateView(View):
