@@ -1,7 +1,10 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from csv_generator.models import SchemaColumn, DataSchema
+from csv_generator.models import (
+    SchemaColumn,
+    DataSchema,
+)
 
 
 class SchemaColumnForm(forms.ModelForm):
@@ -21,4 +24,5 @@ SchemaColumnFormSet = inlineformset_factory(
     SchemaColumn,
     extra=0,
     fields="__all__",
+    form=SchemaColumnForm,
 )
