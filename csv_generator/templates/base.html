@@ -10,7 +10,9 @@
   {% endblock %}
 </head>
 <body>
-  {% include "includes/navbar.html" %}
+  {% block navbar %}
+    {% include "includes/navbar.html" %}
+  {% endblock %}
   <div style="margin: 20px">
     {% block content %}{% endblock %}
   </div>
