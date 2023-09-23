@@ -22,7 +22,7 @@ from csv_generator.models import (
 )
 
 
-class RightUserRequiredMixin(AccessMixin):
+class RightUserForDataSchemaRequiredMixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         data_schema = DataSchema.objects.get(id=pk)
@@ -33,12 +33,31 @@ class RightUserRequiredMixin(AccessMixin):
             else:
                 return redirect(reverse("csv_generator:schema-list"))
 
-        return super(RightUserRequiredMixin, self).dispatch(
+        return super(RightUserForDataSchemaRequiredMixin, self).dispatch(
             request, *args, **kwargs
         )
 
 
-class DataSchemaListView(LoginRequiredMixin, ListView):
+class RightUserForCSVFileRequiredMixin(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        pk = kwargs.get("pk")
+        generated_csv_file = GeneratedCSV.objects.get(id=pk)
+
+        if request.user.id != generated_csv_file.data_schema.user.id:
+            if self.raise_exception:
+                raise PermissionDenied
+            else:
+                return redirect(reverse("csv_generator:schema-list"))
+
+        return super(RightUserForCSVFileRequiredMixin, self).dispatch(
+            request, *args, **kwargs
+        )
+
+
+class DataSchemaListView(
+    LoginRequiredMixin,
+    ListView,
+):
     model = DataSchema
     template_name = "data_schema_list.html"
     context_object_name = "data_schemas"
@@ -49,7 +68,10 @@ class DataSchemaListView(LoginRequiredMixin, ListView):
         )
 
 
-class DataSchemaCreateView(LoginRequiredMixin, CreateView):
+class DataSchemaCreateView(
+    LoginRequiredMixin,
+    CreateView,
+):
     model = DataSchema
     form_class = DataSchemaForm
     template_name = "schema_form.html"
@@ -87,7 +109,11 @@ class DataSchemaCreateView(LoginRequiredMixin, CreateView):
         )
 
 
-class DataSchemaUpdateView(LoginRequiredMixin, RightUserRequiredMixin, generic.UpdateView):
+class DataSchemaUpdateView(
+    LoginRequiredMixin,
+    RightUserForDataSchemaRequiredMixin,
+    generic.UpdateView,
+):
     model = DataSchema
     form_class = DataSchemaForm
     template_name = "schema_form.html"
@@ -126,13 +152,21 @@ class DataSchemaUpdateView(LoginRequiredMixin, RightUserRequiredMixin, generic.U
         )
 
 
-class DataSchemaDeleteView(LoginRequiredMixin, RightUserRequiredMixin, generic.DeleteView):
+class DataSchemaDeleteView(
+    LoginRequiredMixin,
+    RightUserForDataSchemaRequiredMixin,
+    generic.DeleteView,
+):
     model = DataSchema
     template_name = "data_schema_confirm_delete.html"
     success_url = reverse_lazy("csv_generator:schema-list")
 
 
-class CSVGenerateView(LoginRequiredMixin, RightUserRequiredMixin, View):
+class CSVGenerateView(
+    LoginRequiredMixin,
+    RightUserForDataSchemaRequiredMixin,
+    View,
+):
     @staticmethod
     def get(request, pk):
         data_schema = DataSchema.objects.get(id=pk)
@@ -147,7 +181,11 @@ class CSVGenerateView(LoginRequiredMixin, RightUserRequiredMixin, View):
         return render(request, "generator_csv.html", context)
 
 
-class CSVDownloadView(LoginRequiredMixin, RightUserRequiredMixin, View):
+class CSVDownloadView(
+    LoginRequiredMixin,
+    RightUserForCSVFileRequiredMixin,
+    View,
+):
     @staticmethod
     def get(request, pk):
         csv_file = GeneratedCSV.objects.get(pk=pk)
