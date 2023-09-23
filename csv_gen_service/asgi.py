@@ -17,11 +17,11 @@ import csv_generator.routing
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "csv_gen_service.settings")
 
-application = ProtocolTypeRouter({
+application = ProtocolTypeRouter(
+    {
         "http": get_asgi_application(),
         "websocket": AuthMiddlewareStack(
-                URLRouter(
-                        csv_generator.routing.websocket_urlpatterns
-                )
+            URLRouter(csv_generator.routing.websocket_urlpatterns)
         ),
-})
+    }
+)
