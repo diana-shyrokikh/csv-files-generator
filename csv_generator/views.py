@@ -22,7 +22,20 @@ from csv_generator.models import (
 )
 
 
-class DataSchemaListView(ListView):
+class RightUserRequiredMixin(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.id != kwargs["pk"]:
+            if self.raise_exception:
+                raise PermissionDenied
+            else:
+                return redirect(reverse("csv_generator:login"))
+
+        return super(RightUserRequiredMixin, self).dispatch(
+            request, *args, **kwargs
+        )
+
+
+class DataSchemaListView(LoginRequiredMixin, ListView):
     model = DataSchema
     template_name = "data_schema_list.html"
     context_object_name = "data_schemas"
