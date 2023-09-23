@@ -6,7 +6,7 @@ ENV DJANGO_SETTINGS_MODULE csv_gen_service.settings
 WORKDIR app/
 
 RUN apt-get update \
-    && apt-get -y install libpq-dev gcc \
+    && apt-get -y install libpq-dev gcc
 
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
