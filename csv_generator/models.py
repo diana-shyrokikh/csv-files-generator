@@ -125,17 +125,16 @@ class SchemaColumn(models.Model):
             self.to_range = 2
 
         if self.from_range < 1:
-            raise ValidationError(
-                {"from_range": "'From' field must be equal or greater than 1"}
-            )
+            raise ValidationError({
+                "from_range":
+                    "'From' field must be equal or greater than 1"
+            })
 
         if self.to_range < self.from_range:
-            raise ValidationError(
-                {
-                    "to_range":
-                        "'To' field must be equal or greater than 'From' field"
-                }
-            )
+            raise ValidationError({
+                "to_range":
+                    "'To' field must be equal or greater than 'From' field"
+            })
 
         return True
 

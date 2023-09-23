@@ -2,7 +2,7 @@ const addMoreBtn = document.getElementById("add-more");
 const totalNewForms = document.getElementById(
     "id_schema_column-TOTAL_FORMS"
 );
-addMoreBtn.addEventListener("click", add_new_form)
+addMoreBtn.addEventListener("click", add_new_form);
 
 function add_new_form(event) {
     if (event) {

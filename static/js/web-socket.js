@@ -5,7 +5,6 @@ function connectWebSocket() {
 
     csvSocket.onmessage = function (e) {
         let data = JSON.parse(e.data);
-        console.log("Data:", data);
 
         if (data.type === "connection_established") {
             let rowInput = document.getElementById("row-input");
@@ -44,7 +43,7 @@ function connectWebSocket() {
         if (data.type === "csv_generator_ready") {
             let csvFileRow = document.getElementById(`csv-file-${data.csv_instance_id}`);
             let newRow = document.createElement("tr");
-            let downloadUrl = `/schema/generate/${data.csv_instance_id}/download/`
+            let downloadUrl = `/schema/generate/${data.csv_instance_id}/download/`;
 
             newRow.innerHTML = `
             <th scope="row" class="text-center">${data.csv_instance_id}</th>
@@ -60,7 +59,6 @@ function connectWebSocket() {
             `
 
             csvFileRow.parentNode.replaceChild(newRow, csvFileRow);
-            console.log(newRow)
         }
     }
 
@@ -82,13 +80,12 @@ function connectWebSocket() {
 
     let form = document.getElementById("form")
     form.addEventListener("submit", (e)=> {
-        e.preventDefault()
+        e.preventDefault();
         let rows = e.target.rows.value;
         let data_schema_id = document.getElementById(
             "data_schema_id"
         ).getAttribute('data-pk');
 
-        console.log("Rows:", rows, "data_schema_id", data_schema_id);
         csvSocket.send(JSON.stringify({
             "rows": rows,
             "data_schema_id": data_schema_id,
