@@ -1,8 +1,13 @@
 import os
 
 from django.conf import settings
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    AccessMixin,
+)
+from django.core.exceptions import PermissionDenied
 from django.http import FileResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View, generic
 from django.views.generic import ListView, CreateView
@@ -28,7 +33,7 @@ class DataSchemaListView(ListView):
         )
 
 
-class DataSchemaCreateView(CreateView):
+class DataSchemaCreateView(LoginRequiredMixin, CreateView):
     model = DataSchema
     form_class = DataSchemaForm
     template_name = "schema_form.html"
@@ -66,7 +71,7 @@ class DataSchemaCreateView(CreateView):
         )
 
 
-class DataSchemaUpdateView(generic.UpdateView):
+class DataSchemaUpdateView(LoginRequiredMixin, RightUserRequiredMixin, generic.UpdateView):
     model = DataSchema
     form_class = DataSchemaForm
     template_name = "schema_form.html"
@@ -105,13 +110,13 @@ class DataSchemaUpdateView(generic.UpdateView):
         )
 
 
-class DataSchemaDeleteView(generic.DeleteView):
+class DataSchemaDeleteView(LoginRequiredMixin, RightUserRequiredMixin, generic.DeleteView):
     model = DataSchema
     template_name = "data_schema_confirm_delete.html"
     success_url = reverse_lazy("csv_generator:schema-list")
 
 
-class CSVGenerateView(View):
+class CSVGenerateView(LoginRequiredMixin, RightUserRequiredMixin, View):
     @staticmethod
     def get(request, pk):
         data_schema = DataSchema.objects.get(id=pk)
@@ -126,7 +131,7 @@ class CSVGenerateView(View):
         return render(request, "generator_csv.html", context)
 
 
-class CSVDownloadView(View):
+class CSVDownloadView(LoginRequiredMixin, RightUserRequiredMixin, View):
     @staticmethod
     def get(request, pk):
         csv_file = GeneratedCSV.objects.get(pk=pk)
