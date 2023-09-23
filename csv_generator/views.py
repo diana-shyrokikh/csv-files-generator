@@ -24,11 +24,14 @@ from csv_generator.models import (
 
 class RightUserRequiredMixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
-        if request.user.id != kwargs["pk"]:
+        pk = kwargs.get("pk")
+        data_schema = DataSchema.objects.get(id=pk)
+
+        if request.user.id != data_schema.user.id:
             if self.raise_exception:
                 raise PermissionDenied
             else:
-                return redirect(reverse("csv_generator:login"))
+                return redirect(reverse("csv_generator:schema-list"))
 
         return super(RightUserRequiredMixin, self).dispatch(
             request, *args, **kwargs
