@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    <title>CSV Generator</title>
+{% endblock %}
+{% block content %}
+  <div>
+    <div id="data_schema_id" data-pk="{{ data_schema.pk }}"></div>
+    <div class="container-fluid mb-3 pdl-20">
+      <div class="row">
+        <div class="col-sm-6">
+            <h1>{{ data_schema.title }}</h1>
+        </div>
+
+        <div class="col-sm-3">
+          <a
+              type="button"
+              class="btn btn-primary btn-lg"
+              href="{% url 'csv_generator:schema-update'  pk=data_schema.id%}"
+          >
+            Edit
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div
+        class="col-sm-6 pdl-20"
+    >
+      {% if data_schema.schema_columns %}
+        <table
+            class="table table-light table-hover table-medium"
+        >
+          <thead>
+            <tr>
+              <th scope="col" class="text-center"># Order</th>
+              <th scope="col" class="text-center">Column name</th>
+              <th scope="col" class="text-center">Column type</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for column in data_schema.schema_columns.iterator %}
+              <tr>
+                <th scope="row" class="text-center">{{ column.order }}</th>
+                <td class="text-center">{{ column.name }}</td>
+                <td class="text-center">{{ column.type }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      {% else %}
+      <h2>There are no columns</h2>
+    {% endif%}
+    </div>
+
+    <div class="container-fluid pd-20">
+      <h2>Data Sets</h2>
+      <p>
+        You can create files as much as you would like to.
+        <br>
+        If you would like to have more than 500 rows - we can make it!
+        <br>
+        Please, wait until your CSV file will be created :)
+      </p>
+    </div>
+
+    <div class="container-fluid pd-20">
+      <form id="form">
+        {% csrf_token %}
+
+        <div>
+          <div class="input-group mb-3">
+            <span
+                id="inputGroup-sizing-default"
+                class="input-group-text"
+            >
+              Rows
+            </span>
+            <input
+                id="row-input"
+                type="number"
+                name="rows"
+                required
+                disabled
+            >
+          </div>
+          <div class="mb-3">
+            <button
+              type="submit"
+              class="btn btn-success btn-lg"
+          >
+            Generate CSV
+          </button>
+          </div>
+        </div>
+        <p id="connection-info">Connection to the generate server...</p>
+        </form>
+    </div>
+
+    <div
+        class="col-sm-9 table-min"
+    >
+        <table
+            class="table table-light table-hover"
+        >
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">Order id</th>
+              <th scope="col" class="text-center">Created</th>
+              <th scope="col" class="text-center">Status</th>
+              <th scope="col" class="text-center">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="csv-files">
+            {% for csv_file in generated_csv_files.iterator %}
+              <tr id="csv-file-{{ csv_file.id }}">
+                <th scope="row" class="text-center">{{ csv_file.id }}</th>
+                <td class="text-center">{{ csv_file.created|date:"Y-m-d" }}</td>
+                <td class="text-center">
+                  {% if csv_file.status == "Ready" %}
+                    <div class="text-light bg-success rounded-3">
+                    Ready
+                    </div>
+                  {% else %}
+                    <div class="text-light bg-secondary rounded-3">
+                    Processed
+                    </div>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  {% if csv_file.status == "Ready" %}
+                    <a
+                        href="{% url 'csv_generator:csv-download' csv_file.id %}"
+                    >
+                      Download
+                    </a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+  </div>
+  <script src="{% static 'js/web-socket.js' %}"></script>
+{% endblock %}

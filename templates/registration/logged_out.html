@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 
 {% block title %}
-  <title>Login | CSV Generator</title>
+  <title>Logout | CSV Generator</title>
 {% endblock %}
 
 {% block navbar %}
@@ -17,24 +17,27 @@
       <div class="mb-3">
          <div class="mx-auto">
             <h1 class="text-center">
-              Login
+              Logged out
             </h1>
          </div>
       </div>
 
-      <div class="container">
-        {{ form|crispy }}
-
+      <div class="mb-3">
+         <div class="mx-auto">
+            <h4 class="text-center">
+              Thanks for spending some quality time with the web site today.
+            </h4>
+         </div>
       </div>
 
       <div class="mb-3 text-center">
          <div class="col-12 mx-auto">
-            <button
-                type="submit"
+            <a
+                href="{% url 'csv_generator:login' %}"
                 class="btn btn-success btn-lg"
             >
-              Login
-            </button>
+              Log in again
+            </a>
          </div>
       </div>
     </form>

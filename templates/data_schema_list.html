@@ -27,8 +27,7 @@
 
 
     <div
-        class="container-lg"
-        style="max-height: 500px; overflow-y: auto;"
+        class="container-lg table-max"
     >
       {% if data_schemas %}
         <table
@@ -52,16 +51,14 @@
                   <td class="text-center">{{ data_schema.modified }}</td>
                   <td class="text-center">
                      <a
-                         class="link-primary"
-                         style="padding: 5px; text-decoration: none;"
-                         href="{% url 'csv_generator:schema-update'  pk=data_schema.id%}"
+                         class="link-primary custom-link"
+                         href="{% url 'csv_generator:schema-update' pk=data_schema.id%}"
                      >
                        Edit
                      </a>
                      <a
-                         class="link-danger"
-                         style="padding: 5px; text-decoration: none;"
-                         href="{% url 'csv_generator:schema-delete'  pk=data_schema.id%}"
+                         class="link-danger custom-link"
+                         href="{% url 'csv_generator:schema-delete' pk=data_schema.id%}"
                      >
                        Delete
                      </a>
