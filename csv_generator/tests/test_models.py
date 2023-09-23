@@ -50,7 +50,7 @@ class ModelsTests(TestCase):
     def test_schema_column_str(self):
         self.assertEquals(
             str(self.schema_column_job),
-            f"Test job [Job]"
+            "Test job [Job]"
         )
 
     def test_generated_csv_str(self):
@@ -115,7 +115,7 @@ class ModelsTests(TestCase):
         self.assertTrue(self.user.check_password("user123465"))
 
     def test_data_schema(self):
-        self.assertEquals(self.data_schema.title, "test data schema" )
+        self.assertEquals(self.data_schema.title, "test data schema")
         self.assertEquals(self.data_schema.user, self.user)
         self.assertEquals(self.data_schema.modified, datetime.now().date())
 
