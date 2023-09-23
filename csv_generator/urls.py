@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from csv_generator.views import (
     DataSchemaListView,
@@ -13,7 +13,7 @@ app_name = "csv_generator"
 
 urlpatterns = [
     path(
-        "",
+        "home/",
         DataSchemaListView.as_view(),
         name="schema-list"
     ),
@@ -41,5 +41,9 @@ urlpatterns = [
         "generate/<int:pk>/download/",
         CSVDownloadView.as_view(),
         name="csv-download"
+    ),
+    path(
+        "accounts/",
+        include("django.contrib.auth.urls")
     ),
 ]
