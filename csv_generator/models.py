@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.core.validators import (
@@ -24,13 +26,26 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+    def clean(self):
+        super().clean()
+        if not re.match(USERNAME_REGEX, self.username):
+            raise ValidationError({
+                "username":
+                    "Username should start with a letter "
+                    "and contain only letters and numbers"
+            })
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 class DataSchema(models.Model):
     title = models.CharField(max_length=255, validators=[
         RegexValidator(
             regex=NAME_REGEX,
             message="Title should start with letter "
-                    "and contains only letters and numbers",
+                    "and contains letters, numbers and spaces",
             code="invalid_title"
         )
     ])
@@ -43,6 +58,19 @@ class DataSchema(models.Model):
 
     def __str__(self):
         return f"{self.title} user: {self.user}"
+
+    def clean(self):
+        super().clean()
+        if not re.match(NAME_REGEX, self.title):
+            raise ValidationError({
+                "title":
+                    "Title should start with letter "
+                    "and contains only letters and numbers",
+            })
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         unique_together = [
@@ -69,7 +97,7 @@ class SchemaColumn(models.Model):
             RegexValidator(
                 regex=NAME_REGEX,
                 message="Column name should start with letter "
-                        "and contains only letters and numbers",
+                        "and contains letters, numbers and spaces",
                 code="invalid_name"
             )
         ])
@@ -85,6 +113,9 @@ class SchemaColumn(models.Model):
 
     from_range = models.IntegerField(blank=True, null=True)
     to_range = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} [{self.type}]"
 
     def validate_range(self):
         if not self.from_range:
@@ -110,11 +141,18 @@ class SchemaColumn(models.Model):
 
     def clean(self):
         super().clean()
+        if not re.match(NAME_REGEX, self.name):
+            raise ValidationError({
+                "name":
+                    "Column name should start with letter "
+                    "and contains letters, numbers and spaces",
+            })
         if self.type in ("Integer", "Text"):
             self.validate_range()
 
-    def __str__(self):
-        return f"{self.name} {self.type}"
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         unique_together = [
