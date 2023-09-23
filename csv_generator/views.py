@@ -7,7 +7,11 @@ from django.contrib.auth.mixins import (
 )
 from django.core.exceptions import PermissionDenied
 from django.http import FileResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import (
+    render,
+    redirect,
+    get_object_or_404,
+)
 from django.urls import reverse_lazy, reverse
 from django.views import View, generic
 from django.views.generic import ListView, CreateView
@@ -25,7 +29,8 @@ from csv_generator.models import (
 class RightUserForDataSchemaRequiredMixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
-        data_schema = DataSchema.objects.get(id=pk)
+
+        data_schema = get_object_or_404(DataSchema, id=pk)
 
         if request.user.id != data_schema.user.id:
             if self.raise_exception:
@@ -41,7 +46,7 @@ class RightUserForDataSchemaRequiredMixin(AccessMixin):
 class RightUserForCSVFileRequiredMixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
-        generated_csv_file = GeneratedCSV.objects.get(id=pk)
+        generated_csv_file = get_object_or_404(GeneratedCSV, id=pk)
 
         if request.user.id != generated_csv_file.data_schema.user.id:
             if self.raise_exception:
