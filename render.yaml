@@ -1,3 +1,5 @@
+myIPSource:
+  ipAddress: 0.0.0.0
 services:
   - type: web
     env: python
@@ -30,7 +32,7 @@ services:
 
   - type: redis
     name: csv-test-2-redis
-    ipAllowList: 0.0.0.0
+    ipAllowList: ["0.0.0.0", ]
 
   - type: worker
     name: csv-test-2-celery
