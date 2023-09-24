@@ -150,6 +150,14 @@ python manage.py createsuperuser
 
 <hr>
 
+## Demo
+
+![Website Interface](readme_images/demo/list_schema.png)
+![Website Interface](readme_images/demo/create_schema.png)
+![Website Interface](readme_images/demo/generate_csv.png)
+![Website Interface](readme_images/demo/delete_schema.png)
+
+<hr>
 Remember to replace `localhost` with the relevant 
 IP address if you're not accessing these from the same machine where the services are running.
 
