@@ -129,6 +129,12 @@ docker-compose build
 docker-compose up
 ```
 
+6. Create a superuser:
+``` 
+docker-compose exec web /bin/bash
+python manage.py createsuperuser
+```
+
 <hr>
 
 ## Accessing the Application
@@ -136,26 +142,11 @@ docker-compose up
 1. CSV File Generator is accessible at `http://localhost:8000/`.
 2. Django Admin Page is accessible at `http://localhost:8000/admin`.
 
-
-Use these credentials to log in as a user:
-
-    Login: user 
-    Password: user123456
-
 <hr>
 
 ## Shutdown
 
 1. To stop running server use CTRL-BREAK
-
-<hr>
-
-## Demo
-
-![Website Interface](demo_images/welcome_page.png)
-![Website Interface](demo_images/pet_detail_page.png)
-![Website Interface](demo_images/cat_list_page.png)
-![Website Interface](demo_images/profile_page.png)
 
 <hr>
 
