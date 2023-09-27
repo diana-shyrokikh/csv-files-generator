@@ -22,5 +22,6 @@ RUN adduser \
 
 RUN chown -R django-user:django-user /app/static
 RUN chown -R django-user:django-user /app/media
+RUN chown -R django-user:django-user /app/csv_generator/migrations
 
 USER django-user
