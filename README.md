@@ -122,7 +122,6 @@ cd csv-files-generator
 python -m venv venv
 venv\Scripts\activate (on Windows)
 source venv/bin/activate (on macOS)
-pip install -r requirements.txt
 ```
 
 4. Сreate your .env file taking as an example .env.example file
