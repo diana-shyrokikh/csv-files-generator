@@ -1,6 +1,7 @@
 let csvSocket = null;
+
 function connectWebSocket() {
-    let url = `ws://${window.location.host}/ws/socket-server/`;
+    let url = `ws://${window.location.host}:80/ws/socket-server/`;
     const csvSocket = new WebSocket(url);
 
     csvSocket.onmessage = function (e) {
@@ -66,13 +67,13 @@ function connectWebSocket() {
         if (event.code === 1006) {
             setTimeout(function () {
                 location.reload();
-            }, 60000);
+            }, 100000);
 
             let connectionInfo = document.getElementById("connection-info");
             let newConnectionInfo = document.createElement("p");
             newConnectionInfo.innerHTML = `
               You left me before receiving your CSV file :(
-              <br>You can make a new file after auto reload page in 60 seconds`;
+              <br>You can make a new file after auto reload page in 100 seconds`;
             connectionInfo.parentNode.replaceChild(newConnectionInfo, connectionInfo);
         }
 
