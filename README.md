@@ -88,6 +88,11 @@ a database, cache, message broker, and streaming engine.
 correctness, simplicity, robustness, and performance.
 <br>In this project, it is used for real-time status control of generated CSV files. 
 
+
+- [Nginx Documentation](https://nginx.org/en/)
+<br>`nginx` is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server.
+<br>In this project, it is used for serving static files. 
+
 <hr>
 
 
@@ -139,8 +144,8 @@ python manage.py createsuperuser
 
 ## Accessing the Application
 
-1. CSV File Generator is accessible at `http://localhost:8000/`.
-2. Django Admin Page is accessible at `http://localhost:8000/admin`.
+1. CSV File Generator is accessible at `http://localhost/`.
+2. Django Admin Page is accessible at `http://localhost/admin`.
 
 <hr>
 
@@ -154,10 +159,11 @@ python manage.py createsuperuser
 
 ![Website Interface](readme_images/demo/list_schema.png)
 ![Website Interface](readme_images/demo/create_schema.png)
-![Website Interface](readme_images/demo/generate_csv.png)
+![Website Interface](readme_images/demo/generate_csv_page.png)
 ![Website Interface](readme_images/demo/delete_schema.png)
 
 <hr>
 Remember to replace `localhost` with the relevant 
-IP address if you're not accessing these from the same machine where the services are running.
+IP address (127.0.0.1) if you're not accessing these from 
+the same machine where the services are running.
 
