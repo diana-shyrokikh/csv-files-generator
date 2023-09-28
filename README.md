@@ -70,26 +70,26 @@ In this project, it is used as the main data store.
 <br>This service runs the latest version of Postgres, exposed on port 5432.
 
 
-- [Celery Documentation](https://docs.celeryq.dev/en/stable/)
+- [Celery Official Documentation](https://docs.celeryq.dev/en/stable/)
 <br>`Celery` is a simple, flexible, and reliable distributed system to process vast amounts of messages, 
 while providing operations with the tools required to maintain such a system.
 It’s a task queue with focus on real-time processing, while also supporting task scheduling. 
 <br>In this project, it is used to run generating CSV tasks in the background. 
 
 
-- [Redis Documentation](https://redis.io/docs/)
+- [Redis Official Documentation](https://redis.io/docs/)
 <br>`Redis` is an open source (BSD licensed), in-memory data structure store used as 
 a database, cache, message broker, and streaming engine. 
 <br>In this project, it is used as a Celery message broker. 
 
 
-- [WebSockets Documentation](https://websockets.readthedocs.io/en/stable/index.html)
+- [WebSockets Official Documentation](https://websockets.readthedocs.io/en/stable/index.html)
 <br>`websockets` is a library for building WebSocket servers and clients in Python with a focus on 
 correctness, simplicity, robustness, and performance.
 <br>In this project, it is used for real-time status control of generated CSV files. 
 
 
-- [Nginx Documentation](https://nginx.org/en/)
+- [Nginx Official Documentation](https://nginx.org/en/)
 <br>`nginx` is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server.
 <br>In this project, it is used for serving static files. 
 
@@ -117,23 +117,16 @@ https://github.com/diana-shyrokikh/csv-files-generator.git
 ```
 cd csv-files-generator
 ```
-3.  Сreate venv and install requirements in it:
-```
-python -m venv venv
-venv\Scripts\activate (on Windows)
-source venv/bin/activate (on macOS)
-```
-
-4. Сreate your .env file taking as an example .env.example file
+3. Сreate your .env file taking as an example .env.example file
 
 
-5. Build and run the Docker containers:
+4. Build and run the Docker containers:
 ```
 docker-compose build
 docker-compose up
 ```
 
-6. Create a superuser:
+5. Create a superuser:
 ``` 
 docker-compose exec web /bin/bash
 python manage.py createsuperuser
