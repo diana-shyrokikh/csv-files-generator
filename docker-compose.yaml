@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    command: >
+      sh -c "python3 manage.py wait_for_db &&
+             python3 manage.py makemigrations &&
+             python3 manage.py migrate &&
+             python3 manage.py collectstatic --noinput &&
+             daphne csv_gen_service.asgi:application --bind 0.0.0.0 --port 8000"
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: mydb
+    ports:
+      - "5433:5432"
+
+  celery:
+    build: .
+    restart: unless-stopped
+    command: celery -A csv_gen_service worker -l INFO -c 4
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  redis:
+    restart: unless-stopped
+    image: "redis:latest"
+    expose:
+      - 6379
+
+  nginx:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:/app/static
+
+volumes:
+  static_volume:
+  media_volume:

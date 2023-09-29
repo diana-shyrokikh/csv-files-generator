@@ -1,0 +1,25 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <img src="{% static 'images/CSV_Generator_logo.svg' %}" alt="Logo" style="width: 60px">
+    <b class="navbar-brand">CSV GENERATOR</b>
+    <a
+        class="navbar-text nav-link"
+        href="{% url 'csv_generator:schema-list' %}"
+    >
+      Schema List
+    </a>
+
+    <span class="navbar-text">
+        Hello, {{ user.username }}
+    </span>
+    <a
+        class="btn btn-sm btn-outline-secondary"
+        type="button"
+        href="{% url 'csv_generator:logout' %}"
+    >
+      Logout
+    </a>
+
+  </div>
+</nav>

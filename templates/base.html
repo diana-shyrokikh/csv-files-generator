@@ -1,0 +1,24 @@
+{% load static %}
+
+<!DOCTYPE html>
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {% block title %}
+    <title>Data Schemas</title>
+  {% endblock %}
+  <link rel="icon" href="{% static 'images/CSV_Generator_logo.svg' %}">
+</head>
+<body>
+  {% block navbar %}
+    {% include "includes/navbar.html" %}
+  {% endblock %}
+  <div class="base-div">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>
