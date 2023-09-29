@@ -99,9 +99,7 @@ correctness, simplicity, robustness, and performance.
 
 ## Prerequisites
 
-1. Make sure you have Python installed on your system. 
-You can check the installation instructions [here for Python](https://www.python.org/downloads/).
-2. Make sure you have Docker and Docker Compose installed on your system. 
+1. Make sure you have Docker and Docker Compose installed on your system. 
 You can check the installation instructions [here for Docker](https://docs.docker.com/get-docker/) 
 and [here for Docker Compose](https://docs.docker.com/compose/install/).
 
@@ -153,6 +151,7 @@ python manage.py createsuperuser
 ![Website Interface](readme_images/demo/create_schema.png)
 ![Website Interface](readme_images/demo/generate_csv_page.png)
 ![Website Interface](readme_images/demo/delete_schema.png)
+
 
 <hr>
 Remember to replace `localhost` with the relevant 
